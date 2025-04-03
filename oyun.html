@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START Triyaj Uygulamaları Oyunu</title>
+    <style>
+  :root {
+  --ayrirenk-color:#00c853;
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --border-radius: 12px;
+  --primary-color: #ff3d00;
+  --accent-color: #ff3d00;
+  --text-color: #e0e0e0;
+  --warning-color: #ff4444;
+  --font-family: 'Arial', sans-serif;
+}
+
+/* DUMANLI ARKA PLAN - GÖRSEL KULLANIMI */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  font-family: var(--font-family);
+  color: var(--text-color);
+  position: relative;
+
+  background: 
+    linear-gradient(to bottom,  rgb(0, 0, 0), rgb(255, 255, 255)),
+    url('smoke-bg.png'); /* 👈 buraya dumanlı PNG dosyasını koy */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Başlık */
+h1 {
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-size: 3em;
+  text-align: center;
+  color: var(--text-color);
+  text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.7);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Hasta Kartları */
+.photo-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.photo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.photo-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.6);
+}
+
+img {
+  width: 100%;
+  max-width: 350px;
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  filter: contrast(1.1) brightness(0.95);
+  transition: filter 0.3s ease;
+}
+
+img:hover {
+  filter: brightness(1);
+}
+
+/* Seçim Butonu */
+.select-button {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  padding: 10px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+}
+
+.select-button:hover {
+  background-color: var(--primary-color);
+  color: black;
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+.select-button:active {
+  transform: scale(0.95);
+}
+
+.select-button:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+/* Kapat Butonu */
+.close-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  padding: 5px 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  transition: background-color 0.3s;
+}
+
+.close-button:hover {
+  background-color: rgb(250, 1, 1);
+}
+
+/* Timer */
+.timer {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--accent-color);
+  font-weight: bold;
+  border: 2px solid var(--accent-color);
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.5em;
+  box-shadow: 0 0 8px rgba(255, 61, 0, 0.5);
+  z-index: 1000;
+}
+
+.timer.warning {
+  background-color: var(--warning-color);
+  animation: pulse 1s infinite;
+}
+
+.timer.warning:hover {
+  background-color: var(--text-color);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Doğru Cevap İşareti */
+.photo-item.completed img {
+  opacity: 0.6;
+}
+
+.photo-item.completed::after {
+  content: '✔';
+  position: center;
+  top: 10px;
+  right: 20px;
+  color: var(--ayrirenk-color);
+  font-size: 2.5em;
+  text-shadow: 0 0 6px var(--ayrirenk-color);
+  z-index: 10;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+  .photo-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  .photo-container {
+    grid-template-columns: 1fr;
+  }
+
+  img {
+    max-width: 250px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">06:00</div>
+    <span class="close-button" onclick="goToHomePage()">&times;</span>
+    <h1>START Triyaj Uygulaması İçin Hasta Seçiniz</h1>
+    <div class="photo-container">
+       
+        <div class="photo-item">
+            <img src="photo3.webp" alt="Fotoğraf 3">
+            <button class="select-button" onclick="playSound(); redirectToIndex(9)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo4.webp" alt="Fotoğraf 4">
+            <button class="select-button" onclick="playSound(); redirectToIndex(13)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo5.webp" alt="Fotoğraf 5">
+            <button class="select-button" onclick="playSound(); redirectToIndex(17)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo6.webp" alt="Fotoğraf 6">
+            <button class="select-button" onclick="playSound(); redirectToIndex(18)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo2.webp" alt="Fotoğraf 2">
+            <button class="select-button" onclick="playSound(); redirectToIndex(5)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo7.webp" alt="Fotoğraf 7">
+            <button class="select-button" onclick="playSound(); redirectToIndex(19)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo8.webp" alt="Fotoğraf 8">
+            <button class="select-button" onclick="playSound(); redirectToIndex(22)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo9.webp" alt="Fotoğraf 8">
+            <button class="select-button" onclick="playSound(); redirectToIndex(25)">Seç</button>
+        </div>
+        <div class="photo-item">
+            <img src="photo1.webp" alt="Fotoğraf 1">
+            <button class="select-button" onclick="playSound(); redirectToIndex(1)">Seç</button>
+        </div>
+    </div>
+
+    <audio id="soundEffect" src="ses2.mp3" preload="auto"></audio>
+    <audio id="gameStartSound" src="ses1.mp3" preload="auto"></audio>
+
+    <script>
+        let timeLeft = 360;
+        let timerId;
+        const completedLevels = JSON.parse(sessionStorage.getItem('completedLevels')) || [];
+
+        window.onload = function() {
+            if (localStorage.getItem('timerStarted') === 'true') {
+                let savedTime = localStorage.getItem('timeLeft');
+                if (savedTime) {
+                    timeLeft = parseInt(savedTime);
+                    startTimer();
+                }
+            } else {
+                timeLeft = 360;
+                startTimer();
+            }
+
+            markCompletedLevels();
+        };
+
+        function startTimer() {
+            if (!timerId) {
+                timerId = setInterval(updateTimer, 1000);
+                localStorage.setItem('timerStarted', 'true');
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (timeLeft <= 60) {
+                document.getElementById('timer').classList.add('warning');
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                alert('Süre doldu!');
+                window.location.href = `indexscore.html`;
+            }
+
+            timeLeft--;
+            localStorage.setItem('timeLeft', timeLeft);
+        }
+
+        function redirectToIndex(index) {
+            if (!localStorage.getItem('timerStarted')) {
+                startTimer();
+            }
+
+            if (completedLevels.includes(index)) {
+                alert("Bu bölümü zaten oynadınız!");
+                return;
+            }
+
+            completedLevels.push(index);
+            sessionStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+
+            window.location.href = `index${index}.html`;
+        }
+
+        function goToHomePage() {
+            clearInterval(timerId);
+            localStorage.removeItem('timerStarted');
+            localStorage.removeItem('timeLeft');
+            sessionStorage.removeItem('completedLevels');
+            window.location.href = "index.html";
+        }
+
+        function playSound() {
+            let audio = document.getElementById('soundEffect');
+            audio.currentTime = 0;
+            audio.play().catch(error => console.error("Ses çalınamadı:", error));
+        }
+
+        function markCompletedLevels() {
+            const photoItems = document.querySelectorAll('.photo-item');
+            photoItems.forEach(item => {
+                const button = item.querySelector('.select-button');
+                const onclickAttr = button.getAttribute('onclick');
+                const match = onclickAttr.match(/redirectToIndex\((\d+)\)/);
+                if (match) {
+                    const index = parseInt(match[1]);
+                    if (completedLevels.includes(index)) {
+                        item.classList.add('completed');
+                        button.disabled = true;
+                        button.style.opacity = '0.5';
+                        button.style.cursor = 'not-allowed';
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

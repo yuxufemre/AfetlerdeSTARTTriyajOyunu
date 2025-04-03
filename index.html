@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START Triyaj Uygulamaları Oyunu</title>
+    <style>
+   :root {
+  --ayrirenk-color:#00c853;
+  --primary-color: #ff3d00;
+  --accent-color: #ff3d00;
+  --text-color: #f0f0f0;
+  --button-radius: 6px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: #000000ef; /* Geri dönen sade siyah arka plan */
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* === Arka Plan Video === */
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 120vh;
+  object-fit: cover;
+  z-index: -1;
+  /*pointer-events: none;
+  /*filter: opacity(0.5); /* sayfayı karartmaz, yumuşatır */
+}
+
+/* === Başlık === */
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 40px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: var(--text-color);
+}
+
+/* === Buton Konteyneri === */
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  z-index: 1;
+}
+
+/* === Butonlar === */
+button {
+  
+  color: black;
+  border: 2px solid var(--text-color);
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  
+}
+
+button:hover {
+  background-color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  color: #000;
+  box-shadow: 0 0 12px var(--primary-color);
+  transform: scale(1.05);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* === Kurallar Paneli === */
+.rules-container {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, #868585, #9e9d9d, #ffffff); /* Siyah-beyaz gradyen */
+  color: #111; /* Daha net yazı için */
+  padding: 40px;
+  overflow-y: auto;
+  z-index: 2;
+  animation: fadeIn 0.4s ease-out;
+  h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  margin-bottom: 40px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: black;
+}
+}
+
+/* === Kapatma Butonu === */
+.close-button {
+  position: fixed;
+  top: 10px;
+  right: 25px;
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000000;
+  background-color: rgb(255, 254, 254);
+  border-radius: 50%;
+  padding: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  transition: background-color 0.3s;
+}
+
+.close-button:hover {
+  background-color: rgb(250, 2, 2);
+}
+
+
+
+/* === Video Paneli === */
+.video-container {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 3;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-container video {
+  width: 80%;
+  height: auto;
+  max-height: 80vh;
+  border-radius: var(--button-radius);
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 15px rgba(0, 200, 83, 0.3);
+}
+
+.close-video-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  cursor: pointer;
+  z-index: 4;
+}
+
+/* === Giriş Efekti === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="video1">
+        <source src="video1.mp4" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <h1>START Triyaj Uygulamaları <br> Oyunu</h1>
+    <div class="button-container">
+        <button onclick="playSound(); stopBackgroundSound(); startGame()">Oyuna Başla</button>
+        <button onclick="playSound(); showRules()">Kurallar</button>
+        <button onclick="playSound(); showVideo()">START Triyaj Bilgilendirme Videosu</button>
+        <button onclick="playSound(); showForm()">Bize Geri Bildirim Verin</button>
+    </div>
+
+    <div class="rules-container" id="rulesPage">
+        <span class="close-button" onclick="closeRules()">&times;</span>
+        <h1 style="font-size: 5em;">Kurallar</h1>
+        
+            <li style="font-size: 1.2em;">Bu oyun meydana gelen 7.5 büyüklüğündeki bir deprem sonrası yıkımların olduğu bir enkaz bölgesidir. Bölgede çok sayıda yaralılar bulunmaktadır.</li>
+            <li style="font-size: 1.2em;">Sizden beklenen <strong> START Triyajı Algoritması</strong> kullanarak yaralıları uygun şekilde değerlendirmeniz ve uygun kodları vermenizdir. <br> START Triyaj aksiyonları olay yeri güvenliği alındığı varsayılarak yapılmalıdır.</li>
+            <li style="font-size: 1.2em;">Tüm değerlendirmeleri yapmanız ve uygun kodları vermeniz için <strong>6 dakikanız</strong> bulunmaktadır.</li>
+            <li style="font-size: 1.2em;">Hastaya yanlış müdehale edilirse süreniz <strong> 10 saniye</strong> kısalacaktır.</li>
+            <p style="font-size: 1.2em;"> <strong>Not: Oyuna başlamadan önce START Triyajın detaylı olarak anlatıldığı videonun izlenilmesi tavsiye edilmektedir. <br> Bu videoya Oyun Giriş Ekranındaki, <strong>"START Triyaj Bilgilendirme"</strong> butonundan ulaşabilirsiniz. </strong></p> 
+
+        <h1><strong> Buton Açıklamaları</strong> </h1>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; justify-items: center;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option1.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Bilinç Kontrolü</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option2.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 170px; width: 200px;">
+                <h3 style="margin-top: 20px;"> Dolaşım Kontrolü <br>/Kapiller Geri Dolum Kontrolü</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option3.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Solunum Kontrolü</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option11.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Baş-Boyun Posiyonu</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option10.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Kanama Kontrolü</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option13.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Suni Solunum</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option4.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Yeşil Kod</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option5.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Siyah Kod</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option6.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Kırmızı Kod</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 10px; overflow: hidden;">
+                <img src="option7.webp" alt="Fotoğraf 1" style="max-width: 100%; height: 200px; width: 200px;">
+                <h3 style="margin-top: 10px;"> Sarı Kod</h3>
+            </div>
+        </div>
+    </div>
+        
+
+    <div class="video-container" id="videoPage">
+        <span class="close-video-button" onclick="closeVideo()">&times;</span>
+        <video id="infoVideo" controls>
+            <source src="video2.mp4" type="video/mp4">
+            Tarayıcınız video etiketini desteklemiyor.
+        </video>
+    </div>
+
+    
+
+
+    <audio id="backgroundSound" src="ses2.mp3" preload="auto" loop></audio>
+    <audio id="soundEffect" src="ses1.mp3" preload="auto"></audio>
+
+    <script>
+        window.onload = function() {
+            playBackgroundSound();
+        };
+
+        function startGame() {
+            localStorage.setItem('playGameSound', 'true'); 
+            localStorage.setItem('timeLeft', 6 * 60);
+            localStorage.setItem('timerStarted', 'true');
+            stopBackgroundSound();
+            window.location.href = "oyun.html"; 
+        }
+
+        function showRules() {
+            document.getElementById("rulesPage").style.display = "block";
+            stopBackgroundSound();
+        }
+
+        function closeRules() {
+            document.getElementById("rulesPage").style.display = "none";
+            playBackgroundSound();
+        }
+
+        function showVideo() {
+            stopBackgroundSound(); 
+            let videoPage = document.getElementById("videoPage");
+            let video = document.getElementById("infoVideo");
+
+            video.currentTime = 0; 
+            videoPage.style.display = "flex"; 
+            
+            let playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => console.error("Video otomatik oynatılamadı, manuel başlatın."));
+            }
+        }
+
+        function closeVideo() {
+            let videoPage = document.getElementById("videoPage");
+            let video = document.getElementById("infoVideo");
+
+            video.pause();
+            video.currentTime = 0;
+            videoPage.style.display = "none";
+            playBackgroundSound();
+        }
+
+        function playSound() {
+            const sound = document.getElementById('soundEffect');
+            sound.currentTime = 0;
+            sound.play().catch(error => console.error("Ses çalma hatası:", error));
+        }
+
+        function playBackgroundSound() {
+            const backgroundSound = document.getElementById('backgroundSound');
+            if (backgroundSound.paused) {
+                backgroundSound.play().catch(error => console.error("Arka plan sesi çalınamadı:", error));
+            }
+        }
+
+        function stopBackgroundSound() {
+            const backgroundSound = document.getElementById('backgroundSound');
+            backgroundSound.pause();
+            backgroundSound.currentTime = 0;
+        }
+        function startGame() {
+        // Oyun sesi başlat
+        const gameAudio = document.getElementById('soundEffect');
+        gameAudio.currentTime = 0;
+        gameAudio.play().catch(error => console.error("Oyun sesi çalınamadı:", error));
+
+        // Arka plan sesini durdur
+        stopBackgroundSound();
+
+        // 2 saniye gecikmeli yönlendirme
+        setTimeout(() => {
+            localStorage.setItem('playGameSound', 'true');
+            localStorage.setItem('timeLeft', 6 * 60);
+            localStorage.setItem('timerStarted', 'true');
+            window.location.href = "oyun.html";
+        }, 1000);}
+        function showForm() {
+            stopBackgroundSound(); 
+            window.open("https://forms.gle/FybNoGLL9KnGRNu2A", "_blank");
+        }
+    </script>
+</body>
+</html>

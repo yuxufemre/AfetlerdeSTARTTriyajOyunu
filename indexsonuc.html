@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sonuç Gönderme</title>
+  <style>
+    :root {
+      --primary-color: #00c853;
+      --accent-color: #ff3d00;
+      --bg-color: #413e3e;
+      --card-bg: #1a1a1a;
+      --text-color: #f0f0f0;
+      --border-radius: 10px;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
+    }
+
+    .form-card {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      width: 320px;
+      max-width: 90%;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #444;
+      border-radius: var(--border-radius);
+      background-color: #2c2c2c;
+      color: var(--text-color);
+      font-size: 1em;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      border-radius: var(--border-radius);
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: var(--primary-color);
+      color: #000;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    #successMessage {
+      display: none;
+      margin-top: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    #successMessage div {
+      font-size: 3rem;
+      color: var(--primary-color);
+    }
+
+    #successMessage p {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      .form-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Sonucunuzu Gönderin</h1>
+  <div class="form-card">
+    <input type="text" id="firstName" placeholder="Adınızı girin" required />
+    <input type="text" id="lastName" placeholder="Soyadınızı girin" required />
+    <button onclick="saveToGoogleSheet()">Sonucunu Gönder</button>
+    <button onclick="window.location.href='index.html'">Ana Sayfa</button>
+    <div id="successMessage">
+      <div>✅</div>
+      <p>Sonucunuz başarıyla gönderildi!</p>
+    </div>
+  </div>
+
+  <script>
+    async function saveToGoogleSheet() {
+      const url = "https://script.google.com/macros/s/AKfycbyEKPRRn8uFaB4CUvZqHfvX0GapuKWK5FV-QiYKjjRn15NzXnGxC6DmlLA51co0JVVBaw/exec";
+
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const correct = parseInt(localStorage.getItem('correctCount')) || 0;
+      const wrong = parseInt(localStorage.getItem('wrongCount')) || 0;
+
+      if (firstName === "" || lastName === "") {
+        alert("Lütfen adınızı ve soyadınızı girin.");
+        return;
+      }
+
+      const data = {
+        name: firstName,
+        surname: lastName,
+        correctCount: correct,
+        wrongCount: wrong
+      };
+
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      };
+
+      try {
+        const response = await fetch(url, options);
+        const result = await response.text();
+        console.log("Google Sheets'e kaydedildi:", result);
+        alert("Veriler başarıyla kaydedildi!");
+
+        // ✅ Başarı mesajını göster
+        document.getElementById("successMessage").style.display = "block";
+
+        // 🧹 Skorları sıfırla
+        localStorage.removeItem('correctCount');
+        localStorage.removeItem('wrongCount');
+      } catch (error) {
+        console.error("Google Sheets'e yazma hatası:", error);
+        alert("Veri kaydedilemedi! Hata: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>

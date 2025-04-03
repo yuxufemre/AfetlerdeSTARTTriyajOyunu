@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skor Tablosu</title>
+  <style>
+    :root {
+      --primary-color: #00c853;
+      --accent-color: #ff3d00;
+      --warning-color: #f9a825;
+      --bg-color: #413e3e;
+      --panel-bg: #1a1a1a;
+      --text-color: #f0f0f0;
+      --border-radius: 12px;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      color: var(--primary-color);
+      text-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .scoreboard {
+      background-color: var(--panel-bg);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      width: 350px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .score {
+      font-size: 1.5em;
+      margin: 12px 0;
+      font-weight: bold;
+    }
+
+    .score.good {
+      color: var(--primary-color);
+    }
+
+    .score.medium {
+      color: var(--warning-color);
+    }
+
+    .score.low {
+      color: var(--accent-color);
+    }
+
+    .progress-container {
+      background-color: rgba(255, 255, 255, 0.1);
+      height: 20px;
+      border-radius: 10px;
+      margin: 15px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: var(--primary-color);
+      transition: width 0.5s ease;
+    }
+
+    .badge {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 10px;
+      color: var(--primary-color);
+    }
+
+    .badge.medium {
+      color: var(--warning-color);
+    }
+
+    .badge.low {
+      color: var(--accent-color);
+    }
+
+    .button {
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: var(--border-radius);
+      margin-top: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: var(--primary-color);
+      color: #000;
+      box-shadow: 0 0 12px var(--primary-color);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Skor Tablosu</h1>
+  <div class="scoreboard">
+    <div class="score correct">Doğru: 0</div>
+    <div class="score wrong">Yanlış: 0</div>
+    <div class="score percent">Başarı: %0</div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="badge" id="badge">Derece: -</div>
+
+    <button class="button" onclick="resetScoreAndGoHome()">Devam</button>
+
+  </div>
+
+  <script>
+    window.onload = function () {
+      const correctScore = parseInt(localStorage.getItem('correctCount')) || 0;
+      const wrongScore = parseInt(localStorage.getItem('wrongCount')) || 0;
+  
+      const total = correctScore + wrongScore;
+      const percentage = total > 0 ? Math.round((correctScore / total) * 100) : 0;
+  
+      const correctEl = document.querySelector('.score.correct');
+      const wrongEl = document.querySelector('.score.wrong');
+      const percentEl = document.querySelector('.score.percent');
+      const progressBar = document.getElementById('progress-bar');
+      const badgeEl = document.getElementById('badge');
+  
+      correctEl.textContent = `Doğru: ${correctScore}`;
+      wrongEl.textContent = `Yanlış: ${wrongScore}`;
+      percentEl.textContent = `Başarı: %${percentage}`;
+      progressBar.style.width = `${percentage}%`;
+  
+      // Renk sınıfları
+      const applyLevelClass = (element, value) => {
+        if (value >= 80) {
+          element.classList.add('good');
+        } else if (value >= 50) {
+          element.classList.add('medium');
+        } else {
+          element.classList.add('low');
+        }
+      };
+  
+      applyLevelClass(correctEl, correctScore);
+      applyLevelClass(wrongEl, wrongScore);
+      applyLevelClass(percentEl, percentage);
+  
+      // Ünvan
+      if (percentage >= 80) {
+        badgeEl.textContent = "Derece: 🥇 Harika!";
+      } else if (percentage >= 50) {
+        badgeEl.textContent = "Derece: 🙂 İyi";
+        badgeEl.classList.add("medium");
+      } else {
+        badgeEl.textContent = "Derece: ⚠️ Geliştirmen Gerek";
+        badgeEl.classList.add("low");
+      }
+    };
+  
+    function resetScoreAndGoHome() {
+  localStorage.removeItem('correctCount');
+  localStorage.removeItem('wrongCount');
+  window.location.href = 'indexsonuc.html';
+}
+
+  </script>
+  
+  </script>
+</body>
+</html>
